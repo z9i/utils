@@ -1,0 +1,7 @@
+{
+  "name": "z9i-utils",
+  "private": true,
+  "devDependencies": {
+    "lerna": "^3.4.3"
+  }
+}
