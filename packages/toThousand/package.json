@@ -1,0 +1,16 @@
+{
+  "name": "@z9i/to-thousand",
+  "version": "0.0.1",
+  "description": "Format Number (in Thousand)",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "keywords": [
+    "number",
+    "thousand",
+    "util"
+  ],
+  "author": "z9i",
+  "license": "MIT"
+}
