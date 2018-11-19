@@ -1,0 +1,10 @@
+{
+  "name": "@z9i/url-resolver",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "author": "z9i",
+  "license": "MIT"
+}
