@@ -1,0 +1,16 @@
+{
+  "name": "@z9i/date-format",
+  "version": "0.0.1",
+  "description": "Format date",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "keywords": [
+    "date",
+    "format",
+    "util"
+  ],
+  "author": "z9i",
+  "license": "MIT"
+}
