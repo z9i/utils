@@ -1,3 +1,8 @@
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global = global || self, global.isIdCardNumber = factory());
+}(this, function () {
 /**
  * 验证是否是身份证号码
  * 身份证规则（GB11643-1999）：
@@ -6,10 +11,10 @@
  * 注：从 1999 年 10 月 1 日起，全国实行公民身份证号码制度，居民身份证编号由原 15 位升至 18 位。
  * 港澳台由于特殊原因，身份证号码规则可能有所不同，可以不参与校验，这里不做排除。
  * @param {String} value 待验证字符串
- * @param {Boolean} s15 是否支持 15 位身份证号码
+ * @param {Boolean} [s15=true] 是否支持 15 位身份证号码
  * @returns {Boolean}
  */
-module.exports = function isIdCardNumber(value, s15 = true) {
+return function isIdCardNumber(value, s15) {
   if (typeof value !== 'string') {
     // 不是字符串的不做判断
     return false;
@@ -22,7 +27,7 @@ module.exports = function isIdCardNumber(value, s15 = true) {
   var strict = true;
 
   // 18 位格式不通过时，再判断 15 位的标识
-  if (!matched && s15) {
+  if (!matched && (s15 === undefined || !!s15)) {
     matched = value.match(regIdCard15);
     if (!matched) {
       return false;
@@ -84,7 +89,7 @@ function isLeapYear(v) {
  * @param {Number} v 传入的行政区划代码的前两位
  */
 function isAD(v) {
-  const AD_LIST = [
+  var AD_LIST = [
     11, // 北京市
     12, // 天津市
     13, // 河北省
@@ -123,3 +128,5 @@ function isAD(v) {
 
   return AD_LIST.indexOf(v) !== -1;
 }
+
+}));
