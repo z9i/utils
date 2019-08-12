@@ -1,6 +1,6 @@
 {
   "name": "@z9i/to-thousand",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Format Number (in Thousand)",
   "main": "lib/index.js",
   "scripts": {
