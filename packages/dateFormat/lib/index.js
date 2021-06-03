@@ -17,58 +17,67 @@
  * 调用的 Date 对象方法：
  *   new Date(year, monthIndex [, day [, hours [, minutes [, seconds [, milliseconds]]]]]);
  *
+ * 通常来说建议直接传入时间戳或者 Date 实例，避免字符串处理中出现的异常问题
+ * @see https://www.zhihu.com/question/385794468/answer/1137013403
+ *
  * @param {number|string|Date} v 待解析
- * @param {string} format 解析后的格式，如果传入 `timestamp` 则直接返回时间戳
+ * @param {string} format 解析后的格式，如果传入 `timestamp` 则直接返回时间戳，默认格式为 YYYY-MM-DD
  */
 return function dateFormat(v, format) {
+  // 不处理空值
   if (!v) {
     return v;
   }
   if (typeof format !== 'string') {
-    format = 'YYYY-MM-DD'
+    format = 'YYYY-MM-DD';
   }
-  // 如果传入国际标准字符串，并且刚好是 12 点，则将上午标识修订为下午
-  if (typeof v === 'string' && /12(:00(:00)?)? AM/i.test(v)) {
-    v = v.replace(/AM/i, 'PM');
+  if (typeof v === 'string') {
+    // 如果传入国际标准字符串，并且刚好是 12 点，则将上午标识修订为下午
+    if (/12(:00(:00)?)? AM/i.test(v)) {
+      v = v.replace(/AM/i, 'PM');
+    }
+    // 直接替换字符串中的横杠，避免可能的兼容性问题
+    v = v.replace(/-/g, '/');
   }
-  var _date = v instanceof Date ? v : new Date(/^\d+$/.test(v) ? +v : v);
-  var _time = _date.getTime();
+  var date = v instanceof Date ? v : new Date(/^\d+$/.test(v) ? +v : v);
+  var time = date.getTime();
 
-  if (isNaN(_time) && typeof v === 'string') {
+  if (isNaN(time) && typeof v === 'string') {
+    // 匹配 YYYY-MM-DD HH:mm:ss 格式，进行精确析取，但会忽略时区
     var match = v.match(/^(\d+)[-/](\d+)[-/](\d+)[Tt\s](\d+):(\d+):(\d+)/);
     if (match) {
-      _date = new Date(+match[1], +match[2] - 1, +match[3], +match[4], +match[5], +match[6]);
-      _time = _date.getTime();
+      date = new Date(+match[1], +match[2] - 1, +match[3], +match[4], +match[5], +match[6]);
+      time = date.getTime();
     }
   }
 
-  if (isNaN(_time)) {
+  if (isNaN(time)) {
     return v; // 解析失败返回原值
   }
 
   if (format === 'timestamp') {
-    return _time;
+    return time;
   }
 
   var ret = format;
 
   var o = {
-    'M+': _date.getMonth() + 1, // month
-    'd+': _date.getDate(), // day
-    'D+': _date.getDate(), // day
-    'H+': _date.getHours(), // hour
-    'h+': _date.getHours(), // hour
-    'm+': _date.getMinutes(), // minute
-    's+': _date.getSeconds(), // second
-    'S': _date.getMilliseconds() // millisecond
+    'M+': date.getMonth() + 1, // 月
+    'd+': date.getDate(), // 日
+    'D+': date.getDate(), // 日
+    'H+': date.getHours(), // 时
+    'h+': date.getHours(), // 时
+    'm+': date.getMinutes(), // 分
+    's+': date.getSeconds(), // 秒
+    'S': date.getMilliseconds() // 毫秒
   };
 
   // 年份处理
   ret = ret.replace(/y{4}/gi, function (year) {
-    return _date.getFullYear();
+    return date.getFullYear();
   });
   ret = ret.replace(/y{2}/gi, function (year) {
-    return ('' + _date.getFullYear()).substr(2);
+    return ('' + date.getFullYear()).substr(2);
   });
 
   // 其他格式化处理
