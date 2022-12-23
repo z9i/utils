@@ -1,10 +1,10 @@
 {
   "name": "@z9i/date-format",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Format date",
   "main": "lib/index.js",
   "scripts": {
-    "test": "node test"
+    "test": "mocha"
   },
   "keywords": [
     "date",
