@@ -10,8 +10,6 @@ describe('dateFormat', function () {
   it('Should return itself while it is a falsy', function () {
     let v = undefined
     ok(dateFormat(v) === v)
-    v = 0
-    ok(dateFormat(v) === v)
     v = false
     ok(dateFormat(v) === v)
     v = ''

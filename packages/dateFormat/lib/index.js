@@ -24,35 +24,46 @@
  * @param {string} format 解析后的格式，如果传入 `timestamp` 则直接返回时间戳，默认格式为 YYYY-MM-DD
  */
 return function dateFormat(v, format) {
-  // 不处理假值
-  if (!v) {
-    return v;
-  }
   var date;
+  var type = typeof v;
+
   if (v instanceof Date) {
     date = v;
-  } else if (typeof v === 'object') {
-    // 其他对象类型的不处理，原值返回
-    return v;
-  } else {
-    if (typeof v === 'string') {
-      // 如果传入国际标准字符串，并且刚好是 12 点，则将上午标识修订为下午
-      if (/12(:00(:00)?)? AM/i.test(v)) {
-        v = v.replace(/AM/i, 'PM');
-      }
-      // 直接替换字符串中的横杠，避免可能的兼容性问题
-      v = v.replace(/-/g, '/');
-    }
+  } else if (type === 'number') {
+    date = new Date(v);
+  } else if (type === 'string') {
     date = new Date(/^\d+$/.test(v) ? +v : v);
   }
+
+  // 仅支持 Date 类型、数字、字符串类型参数，其他情形返回原值
+  if (!date) {
+    return v;
+  }
+
   var time = date.getTime();
 
-  if (isNaN(time) && typeof v === 'string') {
-    // 匹配 YYYY-MM-DD HH:mm:ss.SSS 格式，进行精确析取，但会忽略时区
-    var match = v.match(/^(\d+)[-/](\d+)[-/](\d+)[Tt\s](\d+):(\d+):(\d+)(?:\.(\d+))?/);
-    if (match) {
-      date = new Date(+match[1], +match[2] - 1, +match[3], +match[4], +match[5], +match[6], +match[7] || 0);
+  if (isNaN(time) && type === 'string') {
+    // 如果传入国际标准字符串，并且刚好是 12 点，则将上午标识修订为下午
+    if (/12(:00(:00)?)? AM/i.test(v)) {
+      v = v.replace(/AM/i, 'PM');
+    }
+    date = new Date(v);
+    time = date.getTime();
+
+    if (isNaN(time)) {
+      // 尝试替换字符串中的横杠，避免可能的兼容性问题
+      v = v.replace(/-/g, '/');
+      date = new Date(v);
       time = date.getTime();
+    }
+
+    if (isNaN(time)) {
+      // 匹配 YYYY-MM-DD HH:mm:ss.SSS 格式，进行精确析取，但会忽略时区
+      var match = v.match(/^(\d+)[-/](\d+)[-/](\d+)[Tt\s](\d+):(\d+):(\d+)(?:\.(\d+))?/);
+      if (match) {
+        date = new Date(+match[1], +match[2] - 1, +match[3], +match[4], +match[5], +match[6], +match[7] || 0);
+        time = date.getTime();
+      }
     }
   }
 
