@@ -24,6 +24,7 @@
  * @param {string} format 解析后的格式，如果传入 `timestamp` 则直接返回时间戳，默认格式为 YYYY-MM-DD
  */
 return function dateFormat(v, format) {
+  var raw = v;
   var date;
   var type = typeof v;
 
@@ -37,7 +38,7 @@ return function dateFormat(v, format) {
 
   // 仅支持 Date 类型、数字、字符串类型参数，其他情形返回原值
   if (!date) {
-    return v;
+    return raw;
   }
 
   var time = date.getTime();
@@ -68,7 +69,7 @@ return function dateFormat(v, format) {
   }
 
   if (isNaN(time)) {
-    return v; // 解析失败返回原值
+    return raw; // 解析失败返回原值
   }
 
   if (typeof format !== 'string') {

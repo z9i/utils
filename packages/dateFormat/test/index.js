@@ -31,6 +31,8 @@ describe('dateFormat', function () {
     ok(dateFormat(v) === v)
     v = function () {}
     ok(dateFormat(v) === v)
+    v = '--'
+    ok(dateFormat(v) === v)
   })
 
   it('Should return a string', function () {
